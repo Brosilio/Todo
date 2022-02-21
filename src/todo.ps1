@@ -4,6 +4,13 @@
 Import-Module '.\tui.psm1' -Force
 
 ##
+# Helper functions
+##
+function Save {
+    $todo | ConvertTo-Json | Set-Content '~\.pstodo' -Force
+}
+
+##
 # Check if ~/.pstodo exists
 ##
 if (-not (Test-Path '~\.pstodo')) {
@@ -63,7 +70,7 @@ while ($true) {
     switch ($key.Character) {
         # Escape ([q]uit)
         { $_ -in 'q','' } {
-            $todo | ConvertTo-Json | Set-Content '~\.pstodo' -Force
+            Save
             exit 0
         }
 
@@ -74,6 +81,7 @@ while ($true) {
                 date = [DateTime]::Now.ToString()
                 todo = Read-Host 'Task'
             })
+            Save
         }
 
         # [E]dit item
@@ -82,13 +90,17 @@ while ($true) {
         # [D]uplicate item
         'd' {
             $todo.Add($todo[$sel])
+            Save
         }
 
         # [S]ort items
         #'s' { write-host 'sort items' }
 
         # Complete/uncomplete item
-        ' ' { $todo[$sel].done = (-not $todo[$sel].done) }
+        ' ' {
+            $todo[$sel].done = (-not $todo[$sel].done)
+            Save
+        }
 
         'i' {
             $todo | ConvertTo-Json | Write-Host
@@ -102,6 +114,7 @@ while ($true) {
                 46 {
                     if ((Read-HostKey -Prompt 'Delete item? (y/n): ') -eq 'y')  {
                         $todo.RemoveAt($sel)
+                        Save
                     }
 
                     # Move selection back if the last item was deleted
