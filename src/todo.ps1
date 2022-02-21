@@ -4,39 +4,6 @@
 Import-Module '.\tui.psm1' -Force
 
 ##
-# Helper functions
-##
-function Get-PrettyDate ($date) {
-    if ($date -is [string]) {
-        $date = [DateTime]::Parse($date)
-    }
-
-    $diff = [DateTime]::Now.Subtract($date)
-    if ($diff -gt 0) {
-        if ($diff.TotalSeconds -lt 60) {
-            '{0:N1}s ago' -f $diff.TotalSeconds
-        } elseif ($diff.TotalMinutes -lt 60) {
-            '{0:N2}m ago' -f $diff.TotalMinutes
-        } elseif ($diff.TotalHours -lt 24) {
-            '{0:N2}h ago' -f $diff.TotalHours
-        } else {
-            '{0:N2}d ago' -f $diff.TotalDays
-        }
-    } else {
-        $diff = $diff.Negate()
-        if ($diff.TotalSeconds -lt 60) {
-            'in {0:N1}s' -f $diff.TotalSeconds
-        } elseif ($diff.TotalMinutes -lt 60) {
-            'in {0:N2}m' -f $diff.TotalMinutes
-        } elseif ($diff.TotalHours -lt 24) {
-            'in {0:N2}h' -f $diff.TotalHours
-        } else {
-            'in {0:N2}d' -f $diff.TotalDays
-        }
-    }
-}
-
-##
 # Check if ~/.pstodo exists
 ##
 if (-not (Test-Path '~\.pstodo')) {
