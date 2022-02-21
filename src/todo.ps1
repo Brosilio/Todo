@@ -78,8 +78,8 @@ while ($true) {
         'n' {
             $todo.Add(@{
                 done = $false
-                date = [DateTime]::Now.ToString()
                 todo = Read-Host 'Task'
+                date = [DateTime]::Now.ToString()
             })
             Save
         }
