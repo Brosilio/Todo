@@ -7,6 +7,7 @@ Import-Module '.\tui.psm1' -Force
 # Helper functions
 ##
 function Save {
+    Write-Host 'Saving...'
     $todo | ConvertTo-Json | Set-Content '~\.pstodo' -Force
 }
 
@@ -47,9 +48,6 @@ while ($true) {
         if ($_.done) { $fg = 'Darkgray' }
         $x = switch ($_.done) { $true { 'x' } default { ' ' } }
 
-        # convert date string back to [datetime]
-#        $_.date = [datetime]::Parse($_.date)
-
         Write-Host "$($i + 1) [$x] " -NoNewline -ForegroundColor $fg -BackgroundColor $bg
         Write-Host $_.todo -NoNewline -ForegroundColor $fg -BackgroundColor $bg
         Write-Host " (added $(Get-PrettyDate $_.date))" -ForegroundColor 'DarkGray'
@@ -68,9 +66,10 @@ while ($true) {
     ##
     $key = Read-HostKey -Full
     switch ($key.Character) {
-        # Escape ([q]uit)
+        # Escape (q, escape literal character)
         { $_ -in 'q','' } {
             Save
+            Write-Host 'Bye' -ForegroundColor 'Green'
             exit 0
         }
 
